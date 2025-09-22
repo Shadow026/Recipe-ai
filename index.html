@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es"> <!-- Indica que el documento es HTML5 y que el idioma es español -->
+<head>
+  <meta charset="UTF-8"> <!-- Define la codificación de caracteres (UTF-8 admite tildes y ñ) -->
+  <title>Generador de Recetas con IA</title> <!-- Título de la pestaña del navegador -->
+
+  <!-- Estilos CSS -->
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; } /* Fuente general y margen alrededor */
+    input, button { padding: 10px; margin-top: 10px; width: 100%; } /* Espaciado y ancho completo para input y botón */
+    #resultado { 
+      white-space: pre-wrap; /* Mantiene saltos de línea */
+      margin-top: 20px; 
+      padding: 10px; 
+      border: 1px solid #ccc; /* Cuadro con borde gris */
+    }
+  </style>
+</head>
+
+<body>
+  <h1>🍳 Generador de Recetas con IA</h1> <!-- Encabezado principal -->
+  <p>Escribe los ingredientes que tienes:</p> <!-- Texto explicativo -->
+
+  <!-- Campo de entrada de ingredientes -->
+  <input id="ingredientes" placeholder="Ejemplo: pollo, arroz, tomate">
+
+  <!-- Botón que llama a la función "generar" cuando se hace clic -->
+  <button onclick="generar()">Generar receta</button>
+
+  <!-- Contenedor donde aparecerá el resultado -->
+  <div id="resultado"></div>
+
+  <!-- Script con la lógica en JavaScript -->
+  <script>
+    // Función asincrónica que se ejecuta al presionar el botón
+    async function generar() {
+      // Obtiene el valor que el usuario escribió en el input
+      const ingredientes = document.getElementById("ingredientes").value;
+
+      // Muestra un mensaje mientras espera la respuesta del servidor
+      document.getElementById("resultado").innerText = "⏳ Generando receta...";
+      
+      // Hace una petición POST al backend (servidor en Node.js, puerto 3000)
+      const res = await fetch("http://localhost:3000/generar-receta", {
+        method: "POST", // Método POST para enviar datos
+        headers: {"Content-Type": "application/json"}, // Tipo de contenido: JSON
+        body: JSON.stringify({ingredientes}) // Convierte el valor de ingredientes en JSON
+      });
+      
+      // Convierte la respuesta en formato JSON
+      const data = await res.json();
+
+      // Muestra la receta recibida o un mensaje de error si no llega nada
+      document.getElementById("resultado").innerText = data.receta || "Error al generar la receta";
+    }
+  </script>
+</body>
+</html>
